@@ -1,0 +1,64 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <time.h>
+#include <iomanip>
+#include <chrono>  
+#include<stdlib.h>
+#include <list> 
+#include <set> 
+using namespace std;
+
+int main() {
+  const string nfichero="english3.txt";
+  char cadena[80];
+  string palabra;
+  ifstream fichero;
+  fichero.open(nfichero.c_str());
+
+  set<string> seteo; 
+  
+  if(!fichero.fail()){
+    while(!fichero.eof()){
+      fichero.getline(cadena, ' '); //lee los datos
+      //cout<<"Cadena es: "<<cadena<<endl;
+      seteo.insert(cadena);
+    }
+    fichero.close();
+  }
+
+  ofstream archivo;
+  archivo.open("tiempo_search_delete_set.txt",ios::out);
+  int num,cont=0, c=0;
+    string p="";
+    srand(time(NULL));
+    auto start = chrono::high_resolution_clock::now(); //Tiempo start
+    while(c<100){
+    num = 1 + rand() % (194433 - 1);
+    for(auto it = seteo.begin(); it != seteo.end(); ++it){ 
+        //cout << *it<<" "; 
+        cont++;
+        p=*it;
+        if(cont==num) {
+          cont=0;
+          for(auto it2 = seteo.begin(); it2 != seteo.end(); ++it2){
+            if(p==*it2){
+              seteo.erase(it2);
+              it = seteo.end();
+              break;
+            }
+          }
+          break;
+        }
+      }
+      c++;
+      auto end = chrono::high_resolution_clock::now(); //tiempo end
+      double time_taken = chrono::duration_cast<chrono::nanoseconds>(end - start).count(); //calcula tiempo
+      time_taken *= 1e-9;  
+      setprecision(9); //aproximacion 
+      archivo<<fixed<<time_taken<<setprecision(9); //guardo el tiempo en tiempo.txt
+      archivo<<'\n';
+    }
+    archivo.close();
+
+}
