@@ -1,0 +1,73 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <time.h>
+#include <iomanip>
+#include <chrono>  
+#include<stdlib.h>
+
+#include <list> 
+#include <vector> 
+#include <iterator> 
+using namespace std;
+
+int main() {
+  const string nfichero="english3.txt";
+  char cadena[80];
+  string palabra;
+  ifstream fichero;
+  fichero.open(nfichero.c_str());
+
+  list<string> lista; 
+  
+  if(!fichero.fail()){
+    //fichero.getline(cadena, ' ');
+    //cout<<cadena<<endl;
+    while(!fichero.eof()){
+      fichero.getline(cadena, ' '); //lee los datos
+      //cout<<"Cadena es: "<<cadena<<endl;
+      lista.push_back(cadena); //inserta el dato en list
+    }
+    fichero.close();
+  }
+
+  //Buscar y Eliminar
+  ofstream archivo;
+  archivo.open("tiempo_search_delete_array.txt",ios::out);
+  int num,cont=0, c=0;
+    string p="";
+    srand(time(NULL));
+    list <string> :: iterator it; 
+    list <string> :: iterator it2;
+    while(c<100){
+    auto start = chrono::high_resolution_clock::now(); //Tiempo start
+    num = 1 + rand() % (194433 - 1);
+    for(it = lista.begin(); it != lista.end(); ++it){ 
+        //cout << *it<<" "; 
+        cont++;
+        p=*it;
+        if(cont==num) {
+          cont=0;
+          for(it2 = lista.begin(); it2 != lista.end(); ++it2){
+            if(p==*it2){
+              /*cout<<"p: "<<p;
+              cout<<"yay"<<endl;
+              cout<<"num: "<<num<<endl;*/
+              lista.erase(it2);
+              it = lista.end();
+              break;
+            }
+          }
+          break;
+        }
+      }
+      c++;
+      auto end = chrono::high_resolution_clock::now(); //tiempo end
+      double time_taken = chrono::duration_cast<chrono::nanoseconds>(end - start).count(); //calcula tiempo
+      time_taken *= 1e-9;  
+      setprecision(9); //aproximacion 
+      archivo<<fixed<<time_taken<<setprecision(9); //guardo el tiempo en tiempo.txt
+      archivo<<'\n';
+    }
+    archivo.close();
+}
