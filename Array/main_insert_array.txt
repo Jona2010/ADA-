@@ -1,0 +1,43 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <time.h>
+#include <iomanip>
+#include <chrono>  
+#include<stdlib.h>
+
+using namespace std;
+int main() {
+  const string nfichero="english3.txt";
+  char cadena[80];
+  string arreglo[194443];
+  int conta=0;
+  string palabra;
+  ifstream fichero;
+  fichero.open(nfichero.c_str());
+
+  if(!fichero.fail()){
+    //fichero.getline(cadena, 80, ' ');
+    //cout<<cadena<<endl;
+    ofstream archivo;
+    archivo.open("tiempo_insert_array.txt",ios::out);
+    while(!fichero.eof()){
+      auto start = chrono::high_resolution_clock::now(); //Tiempo start
+      
+      fichero.getline(cadena, ' '); //lee los datos
+      //cout<<"Cadena es: "<<cadena<<endl;
+      arreglo[conta]=cadena; //inserta el dato en list
+      conta++;
+      auto end = chrono::high_resolution_clock::now(); //tiempo end
+      double time_taken =  //calcula tiempo
+      chrono::duration_cast<chrono::nanoseconds>(end - start).count(); 
+      time_taken *= 1e-9;  
+      //setprecision(9); //aproximacion
+      //cout << "Time taken by program is : "<<fixed<<time_taken<<setprecision(9)<<endl; 
+      archivo<<fixed<<time_taken<<setprecision(9); //guardo el tiempo en tiempo.txt
+      archivo<<'\n';
+    }
+    archivo.close();
+    fichero.close();
+  }
+}
