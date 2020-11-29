@@ -1,0 +1,99 @@
+import numpy as num
+
+class Vertice:
+  #Clase que define los vertices de las graficas
+  
+  def __init__(self, i):
+    self.ide=i
+    self.next=[]
+    self.visited=False
+    self.father=None
+    self.distance=float('inf')
+    
+  def agregarvecino(self, v, p): #agrega los vecinos de cada nodo
+    if v not in self.next:
+      self.next.append([v, p])
+
+class Grafica:
+  #Clase que define los vertices de las graficas
+  
+  def __init__(self):
+    self.vertexs={}
+
+  def add_vertex(self, id):
+    if id not in self.vertexs:
+      self.vertexs[id]=Vertice(id)
+
+  def add_edge(self, a, b, p):
+    if a in self.vertexs and b in self.vertexs:
+      self.vertexs[a].agregarvecino(b,p)
+      self.vertexs[b].agregarvecino(a,p)
+  
+  def imprimirGrafica(self):
+    for v in self.vertexs:
+      print("La distancia del vertice " + str(v)+" es "+ str(self.vertexs[v].distance) + " llegando desde " + str(self.vertexs[v].father))
+
+  def camino(self, a, b):
+    camino_inicial=[]
+    camino_actual=b
+    while camino_actual != None:
+      camino_inicial.insert(0, camino_actual)
+      camino_actual = self.vertexs[camino_actual].father
+    return [camino_inicial, self.vertexs[b].distance]
+
+  def node_min(self, lista_nodos):
+    if len(lista_nodos)>0:
+      x=self.vertexs[lista_nodos[0]].distance
+      y=lista_nodos[0]
+      for e in lista_nodos:
+        if x>self.vertexs[e].distance:
+          x=self.vertexs[e].distance
+          y=e
+      return y
+
+  def dijkstra(self, a):
+    if a in self.vertexs: #comprueba si el nodo existe en el grafo
+      self.vertexs[a].distance=0 #Distancia 0 al nodo inicial
+      nodo_inicial=a #Nodo inicial es el actual
+      no_visitados=[] #nodos no visitados
+      for v in self.vertexs:
+        if v != a: #Para no poner la distancia en infinito del nodo inicial
+          self.vertexs[v].distance=float('inf') #pone a todos los nodos una distancia de infinito menos al inicial
+        self.vertexs[v].father=None #pone a todos los nodos un predecesor nulo
+        no_visitados.append(v) #agrega al array de novisitados a todos los vertices
+      
+      while len(no_visitados) > 0:
+        for vecino in self.vertexs[nodo_inicial].next:
+          if self.vertexs[vecino[0]].visited==False: #si el vertice vecino no esta visitado
+            if self.vertexs[nodo_inicial].distance + vecino[1] < self.vertexs[vecino[0]].distance: #se evalua si la distancia es menor a la actual en el nodo vecino
+              self.vertexs[vecino[0]].distance = self.vertexs[nodo_inicial].distance + vecino[1]
+              self.vertexs[vecino[0]].father = nodo_inicial; #se actualiza el predecesor
+        self.vertexs[nodo_inicial].visitado=True
+        no_visitados.remove(nodo_inicial) #nodo visitado
+        nodo_inicial=self.node_min(no_visitados)
+    else:
+      return false
+
+class main:
+  g= Grafica()
+  g.add_vertex(1);
+  g.add_vertex(2);
+  g.add_vertex(3);
+  g.add_vertex(4);
+  g.add_vertex(5);
+  g.add_vertex(6);
+  g.add_edge(1, 6, 14);
+  g.add_edge(1, 2, 7);
+  g.add_edge(1, 3, 9);
+  g.add_edge(2, 3, 10);
+  g.add_edge(2, 4, 15);
+  g.add_edge(3, 4, 11);
+  g.add_edge(3, 6, 2);
+  g.add_edge(4, 5, 6);
+  g.add_edge(5, 6, 9);
+
+  print("\n\nLa ruta mas corta por Dijkstra junto con el costo es: ")
+  g.dijkstra(1)
+  print(g.camino(1,6)) #El camino mas corto desde el nodo 1 al 6
+  print("\nLos nodos finales de la grafica son los siguientes:")
+  g.imprimirGrafica()
