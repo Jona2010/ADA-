@@ -91,37 +91,7 @@ int main()
   cout<<endl;
   cout<<"-----------------------------";
   cout<<endl;
-
-
-  cout<<endl;
-  cout<<"TIEMPO DE CUANTO DEMORAN LOS ARRAY DE FORMA ALEATORIA";
-  cout<<endl;
-  cout<<"-----------------------------";
-  cout<<endl;
-
-	for(int n=100;n<=N;n*=10)
-	{
-		for(int i=0;i<n;i++)
-		{
-			A[i]=rand()%n;
-		}
-		
-		cout<<n<<" "; 
-		
-		for(int s=0;s<4;s++)
-		{
-			if(!test_sort(sort[s],A,n))
-			{
-			cout<<"FAIL\n";
-			return 0;
-			}
-		}
-
-  
-  cout<<endl;
-  cout<<"-----------------------------";
-  cout<<endl;
-	}
+	
 
 	delete[]TA;
 	delete[]TB;
